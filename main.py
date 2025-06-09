@@ -28,8 +28,15 @@ def upload_video():
 
 def analyze_fight(filepath):
     cap = cv2.VideoCapture(filepath)
-    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    if not cap.isOpened():
+        return {"error": "Video could not be opened."}
 
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    if total_frames == 0:
+        cap.release()
+        return {"error": "No frames found in video."}
+
+    # تحلیل فرضی
     punches = 10  # فرضی
     kicks = 6     # فرضی
     winner = "Red Fighter" if punches > kicks else "Blue Fighter"
@@ -41,6 +48,7 @@ def analyze_fight(filepath):
         "kicks": kicks,
         "winner": winner
     }
+# fix handle video load errors
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
